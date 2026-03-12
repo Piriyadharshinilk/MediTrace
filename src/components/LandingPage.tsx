@@ -32,7 +32,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, lang }) => {
       headline: 'Your Personal',
       headlineAccent: 'Health Intelligence',
       subtitle:
-        'MediExplain AI transforms complex medical reports into plain language, helps you track wellness, and guides you with smart insights — all in one place.',
+        'MediTrace AI transforms complex medical reports into plain language, helps you track wellness, and guides you with smart insights — all in one place.',
       cta: 'Get Started',
       tagline: 'Trusted · Private · Bilingual',
     },
@@ -41,7 +41,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, lang }) => {
       headline: 'உங்கள் தனிப்பட்ட',
       headlineAccent: 'ஆரோக்கிய நுண்ணறிவு',
       subtitle:
-        'MediExplain AI சிக்கலான மருத்துவ அறிக்கைகளை எளிய மொழியில் விளக்குகிறது, உங்கள் ஆரோக்கியத்தை கண்காணிக்கவும் AI நுண்ணறிவுடன் வழிகாட்டவும் உதவுகிறது.',
+        'MediTrace AI சிக்கலான மருத்துவ அறிக்கைகளை எளிய மொழியில் விளக்குகிறது, உங்கள் ஆரோக்கியத்தை கண்காணிக்கவும் AI நுண்ணறிவுடன் வழிகாட்டவும் உதவுகிறது.',
       cta: 'தொடங்கு',
       tagline: 'நம்பகமான · தனிப்பட்ட · இருமொழி',
     },

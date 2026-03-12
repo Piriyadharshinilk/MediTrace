@@ -28,9 +28,9 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang }) => {
           fontSize: '24px',
           fontWeight: 'bold'
         }}>+</div>
-        <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.5rem' }}>MediExplain AI</h2>
+        <h2 className="text-gradient" style={{ margin: 0, fontSize: '1.5rem' }}>MediTrace AI</h2>
       </div>
-      
+
       <div style={{ display: 'flex', gap: '10px' }}>
         <button 
           onClick={() => setLang('en')}

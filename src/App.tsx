@@ -33,8 +33,14 @@ function App() {
         body: JSON.stringify({ text, lang }),
       });
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Analysis failed.');
+        let errMsg = '';
+        try {
+          const errBody = await response.json();
+          errMsg = errBody.error || JSON.stringify(errBody);
+        } catch {
+          errMsg = await response.text();
+        }
+        throw new Error(errMsg || `Request failed with status ${response.status}`);
       }
       const result: Analysis = await response.json();
       setAnalysis(result);
@@ -46,13 +52,17 @@ function App() {
     }
   };
 
-  // Landing page
+  const handleInputError = (msg: string) => {
+    setErrorMsg(msg);
+  };
+
+  // ── Landing Page ──────────────────────────────────────────────────────────
   if (appView === 'landing') {
     return (
       <div className="app-container">
         <ParticleBackground />
         <div style={{ position: 'fixed', top: '20px', right: '20px', display: 'flex', gap: '8px', zIndex: 1000 }}>
-          <button type="button" onClick={() => setLang('en')} style={{ padding: '8px 14px', background: lang === 'en' ? 'var(--primary)' : 'transparent', color: lang === 'en' ? 'white' : 'var(--text-main)', border: lang === 'en' ? 'none' : '1px solid var(--primary)' }}>English</button>
+          <button type="button" onClick={() => setLang('en')} style={{ padding: '8px 14px', background: lang === 'en' ? 'var(--primary)' : 'transparent', color: lang === 'en' ? 'white' : 'var(--text-main)', border: lang === 'en' ? 'none' : '1px solid var(--primary)' }}>EN</button>
           <button type="button" onClick={() => setLang('ta')} style={{ padding: '8px 14px', background: lang === 'ta' ? 'var(--primary)' : 'transparent', color: lang === 'ta' ? 'white' : 'var(--text-main)', border: lang === 'ta' ? 'none' : '1px solid var(--primary)' }}>தமிழ்</button>
         </div>
         <AnimatePresence>
@@ -64,7 +74,7 @@ function App() {
     );
   }
 
-  // Main app
+  // ── Main App ──────────────────────────────────────────────────────────────
   return (
     <motion.div className="app-container" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <ParticleBackground />
@@ -96,7 +106,12 @@ function App() {
         <AnimatePresence mode="wait">
           {activeTab === 'analysis' ? (
             <motion.div key="analysis" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.3 }}>
-              <ReportInput onAnalyze={handleAnalyze} isLoading={isLoading} lang={lang} />
+              <ReportInput
+                onAnalyze={handleAnalyze}
+                onInputError={handleInputError}
+                isLoading={isLoading}
+                lang={lang}
+              />
               {errorMsg && (
                 <div style={{ background: 'rgba(244,67,54,0.1)', border: '1px solid #F44336', borderRadius: '12px', padding: '15px', marginTop: '10px', color: '#F44336', fontSize: '0.9rem' }}>
                   ⚠️ {errorMsg}
@@ -117,7 +132,7 @@ function App() {
       </main>
 
       <footer style={{ margin: '40px 0', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-        <p>&copy; 2026 MediExplain AI • Built for Impact</p>
+        <p>&copy; 2026 MediTrace AI • Built for Impact</p>
       </footer>
     </motion.div>
   );
