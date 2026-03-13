@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertCircle, CheckCircle, Stethoscope, Activity, Info, Heart, TrendingUp, TrendingDown, Minus, History } from 'lucide-react';
+import { AlertCircle, CheckCircle, Stethoscope, Heart, Download } from 'lucide-react';
 
 export interface Analysis {
   riskLevel: 'Low' | 'Medium' | 'High';
@@ -54,6 +54,10 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ analysis, lang }) => {
 
   if (!analysis) return null;
 
+  const handleDownload = () => {
+    window.print();
+  };
+
   const risk = analysis.riskLevel;
   const colors = riskColors[risk];
 
@@ -105,17 +109,32 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ analysis, lang }) => {
             />
           </div>
         </div>
-        {/* Tags */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {analysis.tags.map((tag, i) => (
-            <span key={i} style={{
-              background: colors.border, color: 'white',
-              padding: '4px 12px', borderRadius: '20px',
-              fontSize: '0.78rem', fontWeight: 700,
-            }}>
-              {tag[lang]}
-            </span>
-          ))}
+        {/* Tags and Action */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-end' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            {analysis.tags.map((tag, i) => (
+              <span key={i} style={{
+                background: colors.border, color: 'white',
+                padding: '4px 12px', borderRadius: '20px',
+                fontSize: '0.78rem', fontWeight: 700,
+              }}>
+                {tag[lang]}
+              </span>
+            ))}
+          </div>
+          <button 
+            onClick={handleDownload}
+            className="no-print"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '8px 16px', background: 'white', border: `1.5px solid ${colors.border}`,
+              color: colors.text, borderRadius: '10px', fontSize: '0.85rem', fontWeight: 700,
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            }}
+          >
+            <Download size={16} />
+            {lang === 'en' ? 'Download PDF' : 'பதிவிறக்கம் PDF'}
+          </button>
         </div>
       </motion.div>
 

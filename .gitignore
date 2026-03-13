@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files
+.env
+server/.env
+
+# Temporary test scripts
+*_tester.mjs
+simulate_request.mjs
+test_gemini.*

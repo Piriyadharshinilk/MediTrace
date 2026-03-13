@@ -18,7 +18,9 @@ app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'] }));
 app.use(express.json());
 
 // ─── Gemini Setup ────────────────────────────────────────────────────────────
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const key = process.env.GEMINI_API_KEY || '';
+console.log(`[INIT] Gemini API Key loaded: ${key.slice(0, 10)}...${key.slice(-4)}`);
+const genAI = new GoogleGenerativeAI(key);
 
 // ─── Delay helper ────────────────────────────────────────────────────────────
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
@@ -113,10 +115,33 @@ Medical Report:
 ${text.slice(0, 3000)}`;
 
   try {
+    console.log(`[DEBUG] Calling Gemini with model: ${MODEL}`);
     const model = genAI.getGenerativeModel({ model: MODEL });
-    const result = await withRetry(() => model.generateContent(prompt));
+    let result;
+    try {
+      result = await withRetry(() => model.generateContent(prompt));
+    } catch (genErr) {
+      console.error('[Analyze Error - Content Generation]', {
+        message: genErr.message,
+        status: genErr.status,
+        stack: genErr.stack,
+        details: genErr.response?.promptFeedback || 'No feedback'
+      });
+      throw genErr;
+    }
+
     const raw = result.response.text();
-    const parsed = extractJSON(raw);
+    console.log(`[DEBUG] Raw Gemini Response:\n${raw}`);
+    
+    let parsed;
+    try {
+      parsed = extractJSON(raw);
+    } catch (parseErr) {
+      console.error('[Analyze Error - JSON Parsing]', parseErr.message);
+      console.error('[Raw Payload for failed parse]:', raw);
+      return res.status(500).json({ error: 'AI gave an invalid response format. Please try again.' });
+    }
+
     console.log(`[OK] Analysis complete. Risk: ${parsed.riskLevel}`);
     res.json(parsed);
   } catch (err) {

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -12,8 +14,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-light);
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
   --primary: #2A5C82;
@@ -269,4 +269,60 @@ textarea:focus {
   font-size: 150px;
   opacity: 0.1;
   font-family: serif;
+}
+
+/* ── Print Styles ── */
+@media print {
+  body {
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .nav-toggle, 
+  .no-print, 
+  header, 
+  footer, 
+  .particle-container,
+  button,
+  .chat-container,
+  .wellness-hub,
+  #root > button:first-of-type,
+  .glass-card:has(textarea) {
+    display: none !important;
+  }
+
+  #root {
+    display: block !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .glass-card {
+    box-shadow: none !important;
+    border: 1.5px solid #E2E8F0 !important;
+    transform: none !important;
+    background: white !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .metric-card {
+    box-shadow: none !important;
+    border: 1px solid #E2E8F0 !important;
+  }
+
+  .text-gradient {
+    -webkit-text-fill-color: var(--primary) !important;
+    background: none !important;
+  }
+
+  @page {
+    margin: 1.5cm;
+  }
 }

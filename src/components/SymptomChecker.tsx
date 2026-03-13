@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, AlertTriangle } from 'lucide-react';
+import { getMediBotResponse } from '../services';
+import type { GeminiHistory } from '../services';
 
 interface Message {
   id: string;
@@ -8,9 +10,7 @@ interface Message {
   sender: 'user' | 'ai';
 }
 
-// Shape Gemini expects for history
-interface GeminiPart { text: string; }
-interface GeminiHistory { role: 'user' | 'model'; parts: GeminiPart[]; }
+// Shape Gemini expects for history is now imported from service.
 
 const SymptomChecker: React.FC<{ lang: 'en' | 'ta' }> = ({ lang }) => {
   const welcome = lang === 'en'
@@ -44,18 +44,8 @@ const SymptomChecker: React.FC<{ lang: 'en' | 'ta' }> = ({ lang }) => {
     const historyToSend = history.slice(-4);
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userText, history: historyToSend, lang }),
-      });
-
-      const data = await response.json();
-      const replyText = response.ok
-        ? data.reply
-        : (lang === 'en' 
-            ? 'The AI is currently processing many requests. Please wait a minute and try your message again — it will work shortly!' 
-            : 'AI தற்போது பிஸியாக உள்ளது. தயவுசெய்து ஒரு நிமிடம் காத்திருந்து மீண்டும் முயற்சிக்கவும்.');
+      // isolated AI logic:
+      const replyText = await getMediBotResponse(userText, historyToSend, lang);
 
       const aiMsg: Message = { id: (Date.now() + 1).toString(), text: replyText, sender: 'ai' };
       setMessages(prev => [...prev, aiMsg]);
@@ -65,10 +55,12 @@ const SymptomChecker: React.FC<{ lang: 'en' | 'ta' }> = ({ lang }) => {
         { role: 'user', parts: [{ text: userText }] },
         { role: 'model', parts: [{ text: replyText }] },
       ]);
-    } catch {
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      console.error("Full Error Trap in Component:", error);
       const errMsg: Message = {
         id: (Date.now() + 1).toString(),
-        text: lang === 'en' ? 'Unable to connect to the AI server. Make sure the backend is running.' : 'AI சேவையகத்துடன் இணைக்க முடியவில்லை.',
+        text: `Error details: ${error instanceof Error ? error.message : "Unknown error"}`,
         sender: 'ai',
       };
       setMessages(prev => [...prev, errMsg]);
