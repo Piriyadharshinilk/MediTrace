@@ -183,12 +183,14 @@ Create a file called `.env` inside the `server/` folder with the following conte
 
 ---
 
-## 🧑‍💻 Developer
+## 🧑‍💻 Developers
 
 **Piriyadharshini L K**
 Student | AI & Healthcare Enthusiast
-
 - GitHub: [@Piriyadharshinilk](https://github.com/Piriyadharshinilk)
+
+**Anusha**
+- GitHub: [@anusha-2024-aia](https://github.com/anusha-2024-aia)
 
 ---
 
